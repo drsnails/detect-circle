@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>draw-it</title>
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+
+	<body onload="onInit()" class="dark">
+        <div class="percent-display">
+            <h1></h1>            
+        </div>
+		<div class="canvas-container">
+			<canvas
+				width="500"
+				height="500"
+				onmousedown="onDown(event)"
+				ontouchstart="onDown(event)"
+				onmouseup="onUp()"
+				ontouchend="onUp()"
+				onmousemove="onMove(event)"
+				ontouchmove="onMove(event)"
+			></canvas>
+		</div>
+		<script src="services/utils.js"></script>
+		<script src="services/canvas.service.js"></script>
+		<script src="main.js"></script>
+	</body>
+</html>

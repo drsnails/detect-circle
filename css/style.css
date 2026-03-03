@@ -1,0 +1,72 @@
+:root {
+
+    --clr-neutral-light-hsl: 0 0% 95%;
+    --clr-neutral-100-hsl: 0 0% 90%;
+    --clr-neutral-200-hsl: 0 0% 80%;
+    --clr-neutral-300-hsl: 0 0% 30%;
+    --clr-neutral-500-hsl: 0 0% 16%;
+    --clr-neutral-700-hsl: 0 0% 10%;
+    --clr-neutral-dark-hsl: 0 0% 5%;
+
+    --clr-neutral-light: hsl(var(--clr-neutral-light-hsl));
+    --clr-neutral-100: hsl(var(--clr-neutral-100-hsl));
+    --clr-neutral-200: hsl(var(--clr-neutral-200-hsl));
+    --clr-neutral-300: hsl(var(--clr-neutral-300-hsl));
+    --clr-neutral-500: hsl(var(--clr-neutral-500-hsl));
+    --clr-neutral-700: hsl(var(--clr-neutral-700-hsl));
+    --clr-neutral-dark: hsl(var(--clr-neutral-dark-hsl));
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    margin: 0;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    align-items: center;
+    /* justify-content: space-around; */
+    /* gap: 1em; */
+}
+
+.canvas-container {
+    height: 90%;
+    flex-grow: 2;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 0.5em;
+}
+
+.dark {
+    background-color: var(--clr-neutral-500);
+    color: rgb(210, 210, 210);
+}
+
+canvas {
+    border: 1px solid black;
+    border-radius: 20px;
+    background-color: rgb(234, 234, 234);
+}
+
+.percent-display {
+    height: 10%;
+
+    h1 {
+        margin-block: 0em;
+        height: 100%;
+        display: grid;
+        place-content: center;
+        
+    }
+}
