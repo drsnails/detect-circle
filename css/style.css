@@ -41,10 +41,11 @@ body {
 
 .canvas-container {
     height: 90%;
+    width: 100%;
     flex-grow: 2;
-    aspect-ratio: 1/1;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding-bottom: 0.5em;
 }
 
@@ -54,9 +55,11 @@ body {
 }
 
 canvas {
+    display: block;
     border: 1px solid black;
     border-radius: 20px;
     background-color: rgb(234, 234, 234);
+    touch-action: none;
 }
 
 .percent-display {

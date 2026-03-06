@@ -27,6 +27,7 @@ function onInit() {
     gElCanvas = document.querySelector('canvas')
     gCtx = gElCanvas.getContext('2d')
     resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
 
     document.addEventListener('keydown', ev => {
         if (ev.key === 'Escape' || ev.key.toLowerCase() === 'c') {
@@ -219,13 +220,10 @@ function drawPencil({ pos, brush = gBrush, lastPos = gLastPos }) {
 
 function resizeCanvas() {
     const elContainer = document.querySelector('.canvas-container')
-    let width = elContainer.offsetWidth
-    let height = elContainer.offsetHeight
-    const minSize = Math.min(window.innerWidth, window.innerHeight) * 0.9
-    if (width > minSize || height > minSize) {
-        width = minSize
-        height = minSize
-    }
-    gElCanvas.width = width
-    gElCanvas.height = height
+    const rect = elContainer.getBoundingClientRect()
+    const size = Math.floor(Math.max(1, Math.min(rect.width, rect.height)))
+    gElCanvas.width = size
+    gElCanvas.height = size
+    gElCanvas.style.width = `${size}px`
+    gElCanvas.style.height = `${size}px`
 }
