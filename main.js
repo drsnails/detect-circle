@@ -63,41 +63,53 @@ function onMove(ev) {
 
 function onUp() {
     gIsMouseDown = false
-
     calculateCircleAccuracy()
 }
 
 function calculateCircleAccuracy() {
-    const { avgPos, radialScore, avgDistance } = getRadialScore()
+    const avgPos = getAvgPos()
+    const avgRadius = calcAvgRadius(avgPos)
+    normalizeJumpsBetweenPts(avgRadius)
+    const radialScore = getRadialScore(avgRadius, avgPos)
     const sharpnessScore = getSharpnessScore()
-    console.log('avgDistance:', avgDistance)
-    // const radialPercent = avgDistance < 35 ? (avgDistance / 35) : 0.6
-    // const radialPercent = avgDistance < 40 ? (1-avgDistance / 40) : 0.6
-    const radialPercent = 0.6
+    // const radialPercent = avgRadius < 35 ? (avgRadius / 35) : 0.6
+    // const radialPercent = avgRadius < 40 ? (1-avgRadius / 40) : 0.6
+    const radialPercent = 0.5
     const finalScore = (sharpnessScore * (1 - radialPercent) + radialScore * radialPercent)
     drawText(avgPos, finalScore.toFixed(2), 12)
     renderScore(finalScore)
 }
 
-function getRadialScore() {
-    const avgPos = gLastPositions.reduce((vecSum, pos) => {
-        vecSum.x += pos.x
-        vecSum.y += pos.y
-        return vecSum
-    }, { x: 0, y: 0 })
-    avgPos.x /= gLastPositions.length
-    avgPos.y /= gLastPositions.length
+function measureAvgGap(avgRadius) {
+    let prevPos = gLastPositions[0]
+    let distSum = 0
+    gLastPositions.forEach((pos, idx) => {
+        if (!idx) return
+        const dist = distance(pos, prevPos)
+        // console.log('✸ → dist:', dist)
+        distSum += dist
+        prevPos = pos
+    })
+    distSum /= gLastPositions.length
+    console.log('gLastPositions:', gLastPositions)
+    console.log('avgRadius:', avgRadius)
+    console.log('distSum:', distSum)
+    console.log('avgGap:', distSum / avgRadius)
+    // console.log('Relative Gap to amount:',distSum);
 
-    const avgDistance = calcAvgDistanceFromCenter(avgPos)
+}
+
+function getRadialScore(avgRadius, avgPos) {
+
     let variance = gLastPositions.reduce((sum, pos) => {
         const individualDist = distance(avgPos, pos)
-        const diff = Math.abs(individualDist - avgDistance) / avgDistance
+        const diff = Math.abs(individualDist - avgRadius) / avgRadius
         return sum + diff
     }, 0) / gLastPositions.length
 
     let sensitivity = 0.3
     let radialScore = Math.exp(-variance / (sensitivity))
-    return { avgPos, radialScore, avgDistance }
+    return radialScore
 }
 
 function getSharpnessScore() {
@@ -117,9 +129,37 @@ function getSharpnessScore() {
         }
     })
     const cornerPercent = cornerCount / circleVectors.length
-    return cornerPercent >= 0.1 ? 0.5 : 1
+    const testScore = Math.max(map(cornerPercent, 0, 0.08, 0.5, 0), 0)
+    return !cornerCount ? 1 : testScore
 
 }
+
+
+function normalizeJumpsBetweenPts(avgRadius) {
+    const radiusPercent = 0.02
+    let lastPoint = gLastPositions[0]
+    gLastPositions = gLastPositions.filter((p, idx) => {
+        if (!idx) return true
+        const dist = distance(p, lastPoint)
+        const isValid = dist > (radiusPercent * avgRadius)
+        if (isValid) lastPoint = p
+        return isValid
+    })
+
+}
+
+function getAvgPos() {
+    const avgPos = gLastPositions.reduce((vecSum, pos) => {
+        vecSum.x += pos.x
+        vecSum.y += pos.y
+        return vecSum
+    }, { x: 0, y: 0 })
+    avgPos.x /= gLastPositions.length
+    avgPos.y /= gLastPositions.length
+
+    return avgPos
+}
+
 
 function renderScore(score) {
     const elPercentDisplay = document.querySelector('.percent-display h1')
@@ -131,12 +171,12 @@ function getDotProduct(v1, v2) {
 }
 
 
-function calcAvgDistanceFromCenter(avgPos) {
-    const avgDistance = gLastPositions.reduce((distSum, pos) => {
+function calcAvgRadius(avgPos) {
+    const avgRadius = gLastPositions.reduce((distSum, pos) => {
         return distSum + distance(avgPos, pos)
     }, 0) / gLastPositions.length
 
-    return avgDistance
+    return avgRadius
 }
 
 
@@ -226,4 +266,9 @@ function resizeCanvas() {
     gElCanvas.height = size
     gElCanvas.style.width = `${size}px`
     gElCanvas.style.height = `${size}px`
+}
+
+
+function map(val, fromStart, fromEnd, toStart, toEnd) {
+    return toStart + (val - fromStart) * (toEnd - toStart) / (fromEnd - fromStart)
 }

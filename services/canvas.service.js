@@ -2,7 +2,7 @@
 
 
 
-function getEvPos(ev) {
+function  getEvPos(ev) {
     const TOUCH_EVS = ['touchstart', 'touchmove', 'touchend']
 
     let clientX = ev.clientX
