@@ -123,20 +123,25 @@ function getSharpnessScore() {
         if (idx >= circleVectors.length - 5) return
         const nextVector = circleVectors[idx + 1] || vector
         const dotProduct = getDotProduct(vector, nextVector)
-        if (dotProduct < 0.1) cornerCount++
+        console.log('✸ → dotProduct:', dotProduct)
+        if (dotProduct < 0.7) cornerCount++
         if (minDotProduct === undefined || dotProduct < minDotProduct) {
             minDotProduct = dotProduct
         }
     })
     const cornerPercent = cornerCount / circleVectors.length
     const testScore = Math.max(map(cornerPercent, 0, 0.08, 0.5, 0), 0)
+    console.log('cornerCount:', cornerCount)
+    console.log('cornerPercent:', cornerPercent)
+    console.log('✸ → testScore:', testScore)
     return !cornerCount ? 1 : testScore
 
 }
 
 
 function normalizeJumpsBetweenPts(avgRadius) {
-    const radiusPercent = 0.02
+    // return
+    const radiusPercent = 0.09
     let lastPoint = gLastPositions[0]
     gLastPositions = gLastPositions.filter((p, idx) => {
         if (!idx) return true
